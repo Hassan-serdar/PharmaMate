@@ -31,8 +31,11 @@ class RegisterRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
         ];
 
-        if (auth()->check() && auth()->user()->role->value === 'admin') {
-            $rules['role'] = ['required', new Enum(Role::class)];
+        if (auth()->check()) {
+            $userRole = auth()->user()->role;
+            if (($userRole instanceof Role && $userRole === Role::ADMIN) || $userRole === Role::ADMIN->value) {
+                $rules['role'] = ['required', new Enum(Role::class)];
+            }
         }
 
         return $rules;
