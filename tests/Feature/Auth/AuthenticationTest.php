@@ -8,6 +8,7 @@ use App\Enums\Role;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
@@ -167,7 +168,7 @@ class AuthenticationTest extends TestCase
     public function a_user_can_update_their_password_with_correct_current_password()
     {
         $plainPassword = 'old-password';
-        $user = User::factory()->create(['password' => $plainPassword]);
+        $user = User::factory()->create(['password' => Hash::make($plainPassword)]);
         Sanctum::actingAs($user);
         $updateData = [
             'current_password' => $plainPassword,
