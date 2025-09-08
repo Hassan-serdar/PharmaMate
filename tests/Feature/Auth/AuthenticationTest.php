@@ -168,15 +168,22 @@ class AuthenticationTest extends TestCase
     public function a_user_can_update_their_password_with_correct_current_password()
     {
         $plainPassword = 'old-password';
-        $user = User::factory()->create(['password' => Hash::make($plainPassword)]);
+        $user = User::factory()->create(['password' => $plainPassword]); // كان Hash::make($plainPassword)
         Sanctum::actingAs($user);
         $updateData = [
             'current_password' => $plainPassword,
             'password' => 'new-password-123',
             'password_confirmation' => 'new-password-123',
         ];
+
+        $this->assertTrue(Hash::check($plainPassword, $user->password));
+
         $response = $this->putJson('/api/profile', $updateData);
+
         $response->assertStatus(200);
+
+        $this->assertTrue(Hash::check('new-password-123', $user->refresh()->password));
+
     }
 
     /** @test */
