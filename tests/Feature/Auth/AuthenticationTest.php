@@ -166,15 +166,14 @@ class AuthenticationTest extends TestCase
     /** @test */
     public function a_user_can_update_their_password_with_correct_current_password()
     {
-        $user = User::factory()->create(['password' => bcrypt('old-password')]);
+        $plainPassword = 'old-password';
+        $user = User::factory()->create(['password' => $plainPassword]);
         Sanctum::actingAs($user);
-
         $updateData = [
-            'current_password' => 'old-password', 
+            'current_password' => $plainPassword,
             'password' => 'new-password-123',
             'password_confirmation' => 'new-password-123',
         ];
-
         $response = $this->putJson('/api/profile', $updateData);
         $response->assertStatus(200);
     }
