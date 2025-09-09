@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Enums\Role;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -17,7 +18,14 @@ return new class extends Migration
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('phonenumber');
-            $table->enum('role', ['user', 'admin', 'pharmacist', 'delivery', 'warehouse_owner']);
+            $table->enum('role', [
+                Role::SUPER_ADMIN->value,
+                Role::ADMIN->value,
+                Role::PHARMACIST->value,
+                Role::DELIVERY->value,
+                Role::WAREHOUSE_OWNER->value,
+                Role::USER->value,
+            ]);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
