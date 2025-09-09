@@ -50,6 +50,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => Role::class,
+
         ];
     }
+    public function pharmacy(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Pharmacy::class);
+    }
+
 }
