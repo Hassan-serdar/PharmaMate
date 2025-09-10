@@ -44,4 +44,14 @@ class Pharmacy extends Model
     {
         return $this->belongsTo(User::class);
     }
+        /**
+     * Scope a query to only include online pharmacies.
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeOnline($query)
+    {
+        return $query->where('status', PharmacyStatusEnum::ONLINE);
+    }
+
 }
