@@ -3,16 +3,13 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UpdateFeedbackRequest;
 use App\Http\Resources\FeedbackResource;
 use App\Models\Feedback;
 use App\Services\FeedbackService;
 use App\Traits\ApiResponser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use App\Enums\FeedbackStatusEnum;
-use App\Enums\FeedbackPriorityEnum;
-use Illuminate\Validation\Rules\Enum;
-use App\Http\Requests\Admin\UpdateFeedbackRequest; 
 
 class AdminFeedbackController extends Controller
 {
@@ -25,10 +22,11 @@ class AdminFeedbackController extends Controller
         $this->authorize('viewAny', Feedback::class);
         $query = Feedback::query()->with(['user', 'assignedTo'])->latest();
         $query->when($request->query('status'), function ($q, $status) {
-            if (FeedbackStatusEnum::tryFrom($status)) {
-                $q->where('status', FeedbackStatusEnum::from($status));
+            if (\App\Enums\FeedbackStatusEnum::tryFrom($status)) {
+                $q->where('status', \App\Enums\FeedbackStatusEnum::from($status));
             }
-        });        $feedback = $query->paginate(20);
+        });
+        $feedback = $query->paginate(20);
         return FeedbackResource::collection($feedback);
     }
     
@@ -39,17 +37,12 @@ class AdminFeedbackController extends Controller
         return new FeedbackResource($feedback);
     }
 
-    public function update(Request $request, Feedback $feedback)
+    public function updateDetails(UpdateFeedbackRequest $request, Feedback $feedback)
     {
-        $this->authorize('update', $feedback);
-        $data = $request->validate([
-            'status' => ['sometimes', 'required', new Enum(FeedbackStatusEnum::class)],
-            'priority' => ['sometimes', 'required', new Enum(FeedbackPriorityEnum::class)],
-            'assigned_to_user_id' => 'sometimes|nullable|exists:users,id',
-        ]);
+        
+        $updatedFeedback = $this->feedbackService->updateFeedbackByAdmin($feedback, $request->validated());
 
-        $this->feedbackService->updateStatus($feedback, $data);
-        return $this->success(new FeedbackResource($feedback), 'Feedback updated successfully.');
+        return $this->success(new FeedbackResource($updatedFeedback), 'Feedback updated successfully.');
     }
 
     public function storeComment(Request $request, Feedback $feedback)

@@ -37,7 +37,7 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     // -- إدارة الشكاوي والاقتراحات --
     Route::get('/feedback', [AdminFeedbackController::class, 'index']);             // عرض كل الرسائل مع الفلترة
     Route::get('/feedback/{feedback}', [AdminFeedbackController::class, 'show']);       // عرض تفاصيل رسالة مع كل الملاحظات
-    Route::put('/feedback/{feedback}', [AdminFeedbackController::class, 'update']);         // تحديث حالة، أولوية، أو إسناد الرسالة
+    Route::put('/feedback/{feedback}', [AdminFeedbackController::class, 'updateDetails']);   // تحديث حالة، أولوية، أو إسناد الرسالة
     Route::post('/feedback/{feedback}/comments', [AdminFeedbackController::class, 'storeComment']); // إضافة رد أو ملاحظة
     Route::delete('/feedback/{feedback}', [AdminFeedbackController::class, 'destroy']);       // حذف أي رسالة
 });

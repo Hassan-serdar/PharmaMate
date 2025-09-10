@@ -43,7 +43,7 @@ class FeedbackController extends Controller
     public function update(UpdateFeedbackRequest $request, Feedback $feedback)
     {
         $this->authorize('update', $feedback);
-        $feedback->update($request->validated());
+        $updatedFeedback = $this->feedbackService->updateFeedbackByUser($feedback, $request->validated());
         return $this->success(new FeedbackResource($feedback), 'Your feedback has been updated.');
     }
 

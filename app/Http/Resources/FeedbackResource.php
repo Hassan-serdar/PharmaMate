@@ -18,7 +18,7 @@ class FeedbackResource extends JsonResource
             'status'          => $this->status?->value,
             'priority'        => $this->priority?->value,
             'assigned_to'     => new UserResource($this->whenLoaded('assignedTo')),
-            'attachments'     => $this->attachments ?? [],
+            'attachments'     => AttachmentResource::collection($this->whenLoaded('attachments')),
             'comments'        => FeedbackCommentResource::collection($this->whenLoaded('comments')),
             'created_at'      => $this->created_at,
             'updated_at'      => $this->updated_at,
