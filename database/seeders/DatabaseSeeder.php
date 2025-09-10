@@ -24,6 +24,14 @@ class DatabaseSeeder extends Seeder
             'role' => Role::SUPER_ADMIN,
         ]);
 
+                User::factory()->create([
+            'firstname' => 'Hassan',
+            'lastname' => 'Admin',
+            'email' => 'admin@website.com',
+            'password' => Hash::make('password'),
+            'role' => Role::ADMIN,
+        ]);
+
         // -- 2. إنشاء الأدمنز --
         User::factory()->count(3)->create([
             'role' => Role::ADMIN,

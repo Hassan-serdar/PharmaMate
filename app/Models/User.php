@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Enums\Role;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -54,9 +55,24 @@ class User extends Authenticatable
 
         ];
     }
+    
     public function pharmacy(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Pharmacy::class);
     }
 
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
+    public function feedbackComments(): HasMany
+    {
+        return $this->hasMany(FeedbackComment::class);
+    }
+
+    public function assignedFeedback(): HasMany
+    {
+        return $this->hasMany(Feedback::class, 'assigned_to_user_id');
+    }
 }
