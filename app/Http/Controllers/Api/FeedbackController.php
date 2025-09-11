@@ -47,6 +47,7 @@ class FeedbackController extends Controller
         $updatedFeedback = $this->feedbackService->updateFeedbackByUser($feedback, $request->validated());
         return $this->success(new FeedbackResource($updatedFeedback), 'Your feedback has been updated.');
     }
+    
         public function storeComment(StoreFeedbackCommentRequest $request, Feedback $feedback)
     {
         // منستدعي "الحارس الأمني" لنتأكد من الصلاحيات

@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\UpdateFeedbackRequest;
-use App\Http\Resources\FeedbackResource;
 use App\Models\Feedback;
-use App\Services\FeedbackService;
 use App\Traits\ApiResponser;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use App\Services\FeedbackService;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\FeedbackResource;
+use App\Http\Requests\Admin\UpdateFeedbackRequest;
+use App\Http\Requests\Admin\StoreFeedbackCommentRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AdminFeedbackController extends Controller
 {
@@ -45,15 +46,11 @@ class AdminFeedbackController extends Controller
         return $this->success(new FeedbackResource($updatedFeedback), 'Feedback updated successfully.');
     }
 
-    public function storeComment(Request $request, Feedback $feedback)
+    public function storeComment(StoreFeedbackCommentRequest $request, Feedback $feedback)
     {
         $this->authorize('update', $feedback); 
-        $data = $request->validate([
-            'comment' => 'required|string|max:5000',
-            'is_private' => 'required|boolean',
-        ]);
 
-        $this->feedbackService->addComment($feedback, auth()->user(), $data);
+        $this->feedbackService->addComment($feedback, auth()->user(), $request->validated());
         return $this->success(new FeedbackResource($feedback->load('comments')), 'Comment added.');
     }
 
