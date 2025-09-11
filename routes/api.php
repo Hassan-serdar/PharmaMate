@@ -24,9 +24,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // -- الشكاوي والاقتراحات الخاصة بالمستخدم --
     Route::get('/my-feedback', [FeedbackController::class, 'index']);          // عرض كل رسائلي
     Route::post('/feedback', [FeedbackController::class, 'store']);             // إرسال رسالة جديدة
+    Route::post('/feedback/{feedback}/comments', [FeedbackController::class, 'storeComment']);
     Route::get('/feedback/{feedback}', [FeedbackController::class, 'show']);      // عرض تفاصيل رسالة واحدة
     Route::put('/feedback/{feedback}', [FeedbackController::class, 'update']);      // تحديث رسالة (إذا كانت new)
     Route::delete('/feedback/{feedback}', [FeedbackController::class, 'destroy']);  // حذف رسالة (إذا كانت new)
+
 });
 
 

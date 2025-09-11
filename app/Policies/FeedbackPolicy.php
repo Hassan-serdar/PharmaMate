@@ -45,6 +45,13 @@ class FeedbackPolicy
         return $user->id === $feedback->user_id && $feedback->status === FeedbackStatusEnum::NEW;
     }
 
+    public function addComment(User $user, Feedback $feedback): bool
+    {
+        // لازم يكون هو صاحب الرسالة و حالة الرسالة ما نحلت
+        return $user->id === $feedback->user_id && $feedback->status !== FeedbackStatusEnum::RESOLVED;
+    }
+
+
     /**
      * تحديد إذا كان المستخدم بيقدر يحذف رسالته
      */

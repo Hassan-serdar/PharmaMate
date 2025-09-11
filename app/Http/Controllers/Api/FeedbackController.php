@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Feedback;
+use App\Traits\ApiResponser;
+use App\Services\FeedbackService;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\FeedbackResource;
 use App\Http\Requests\StoreFeedbackRequest;
 use App\Http\Requests\UpdateFeedbackRequest;
-use App\Http\Resources\FeedbackResource;
-use App\Models\Feedback;
-use App\Services\FeedbackService;
-use App\Traits\ApiResponser;
+use App\Http\Requests\StoreFeedbackCommentRequest;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class FeedbackController extends Controller
@@ -46,6 +47,20 @@ class FeedbackController extends Controller
         $updatedFeedback = $this->feedbackService->updateFeedbackByUser($feedback, $request->validated());
         return $this->success(new FeedbackResource($updatedFeedback), 'Your feedback has been updated.');
     }
+        public function storeComment(StoreFeedbackCommentRequest $request, Feedback $feedback)
+    {
+        // منستدعي "الحارس الأمني" لنتأكد من الصلاحيات
+        $this->authorize('addComment', $feedback);
+
+        // منسلم الشغل للـ Service
+        $this->feedbackService->addUserComment($feedback, auth()->user(), $request->validated());
+
+        return $this->success(
+            new \App\Http\Resources\FeedbackResource($feedback->load('comments')),
+            'Your reply has been added successfully.'
+        );
+    }
+
 
     public function destroy(Feedback $feedback)
     {

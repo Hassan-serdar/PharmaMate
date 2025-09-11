@@ -9,6 +9,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\FeedbackUpdatedNotification;
 use App\Notifications\Admin\NewFeedbackReceivedNotification;
+use App\Notifications\Admin\UserRepliedToFeedbackNotification;
 
 class FeedbackService
 {
@@ -69,5 +70,26 @@ class FeedbackService
         }
 
         return $feedback;
+    }
+        public function addUserComment(Feedback $feedback, User $user, array $data): Feedback
+    {
+        $comment = $feedback->comments()->create([
+            'user_id' => $user->id,
+            'comment' => $data['comment'],
+            'is_private' => false, 
+        ]);
+
+        // إذا كانت الشكوى مسندة لمشرف معين، منبعتله الإشعار إله بس
+        if ($feedback->assignedTo) {
+            $feedback->assignedTo->notify(new UserRepliedToFeedbackNotification($feedback, $comment));
+        } else {
+            // إذا لأ، منبعت الإشعار لكل الأدمنز
+            $admins = User::whereIn('role', [Role::ADMIN, Role::SUPER_ADMIN])->get();
+            if ($admins->isNotEmpty()) {
+                Notification::send($admins, new UserRepliedToFeedbackNotification($feedback, $comment));
+            }
+        }
+        return $feedback;
+
     }
 }
