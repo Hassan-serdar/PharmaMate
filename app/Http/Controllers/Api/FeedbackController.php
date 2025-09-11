@@ -44,7 +44,7 @@ class FeedbackController extends Controller
     {
         $this->authorize('update', $feedback);
         $updatedFeedback = $this->feedbackService->updateFeedbackByUser($feedback, $request->validated());
-        return $this->success(new FeedbackResource($feedback), 'Your feedback has been updated.');
+        return $this->success(new FeedbackResource($updatedFeedback), 'Your feedback has been updated.');
     }
 
     public function destroy(Feedback $feedback)

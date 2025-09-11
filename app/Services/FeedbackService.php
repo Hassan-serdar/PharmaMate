@@ -26,8 +26,7 @@ class FeedbackService
             ]);
         }
         
-        $admins = User::whereIn('role', [Role::ADMIN, Role::SUPER_ADMIN])->get();
-        dd($admins); 
+        $admins = User::whereIn('role', [Role::ADMIN, Role::SUPER_ADMIN])->get(); 
 
         if ($admins->isNotEmpty()) {
             Notification::send($admins, new NewFeedbackReceivedNotification($feedback));
