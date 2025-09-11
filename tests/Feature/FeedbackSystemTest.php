@@ -92,7 +92,23 @@ class FeedbackSystemTest extends TestCase
         // منتأكد إنه تم إرسال إشعار للأدمن
         Notification::assertSentTo($this->admin, NewFeedbackReceivedNotification::class);
     }
-    
+        /** @test */
+        public function feedback_submission_fails_if_attachment_is_too_large()
+    {
+        Sanctum::actingAs($this->user);
+        $feedbackData = [
+            'type' => FeedbackTypeEnum::COMPLAINT->value,
+            'subject' => 'Large file test',
+            'message' => 'This should fail.',
+            'attachments' => [UploadedFile::fake()->create('large_file.pdf', 6000)] // 6MB
+        ];
+
+        // نتأكد إنه رح يرجعلنا خطأ بالبيانات بسبب حجم الملف
+        $this->postJson('/api/feedback', $feedbackData)
+             ->assertStatus(422)
+             ->assertJsonValidationErrors('attachments.0');
+    }
+
     /** @test */
     public function a_user_can_view_only_their_own_feedback_tickets()
     {
@@ -138,7 +154,14 @@ class FeedbackSystemTest extends TestCase
         // لازم يرجعله خطأ "ممنوع"
         $this->putJson("/api/feedback/{$feedback->id}", ['subject' => 'Updated Subject'])->assertForbidden();
     }
-    
+    /** @test */
+    public function a_user_cannot_add_a_comment_to_a_resolved_ticket()
+    {
+        Sanctum::actingAs($this->user);
+        $feedback = Feedback::factory()->create(['user_id' => $this->user->id, 'status' => FeedbackStatusEnum::RESOLVED]);
+        $this->postJson("/api/feedback/{$feedback->id}/comments", ['comment' => 'Thank you!'])->assertForbidden();
+    }
+
     /** @test */
     public function a_user_cannot_update_another_users_feedback()
     {
@@ -150,9 +173,42 @@ class FeedbackSystemTest extends TestCase
         
         $this->putJson("/api/feedback/{$feedback->id}", ['subject' => 'Updated Subject'])->assertForbidden();
     }
+    /** @test */
+    public function a_regular_user_cannot_access_admin_feedback_routes()
+    {
+        Sanctum::actingAs($this->user);
+        
+        // منجرب نفوت على رابط خاص بالأدمن
+        $this->getJson('/api/admin/feedback')->assertForbidden();
+    }
+    /** @test */
+    public function test_user_cannot_create_complaint_without_required_fields()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)
+                        ->postJson('/api/feedback', []);
+
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['type', 'subject','message']);
+    }
+    /** @test */
+    public function test_normal_user_cannot_update_complaint_status()
+    {
+        $user = User::factory()->create();
+        $complaint = Feedback::factory()->create(['status' => FeedbackStatusEnum::NEW]);
+
+        $response = $this->actingAs($user)
+                        ->putJson("/api/feedback/{$complaint->id}", [
+                            'status' => 'new'
+                        ]);
+
+        $response->assertStatus(403);
+    }
+
     
     // -----------------------------------------------------------------
-    // اختبارات رحلة المشرف (Admin Journey)
+    //  (Admin Journey)
     // -----------------------------------------------------------------
     
     /** @test */
@@ -225,12 +281,4 @@ class FeedbackSystemTest extends TestCase
         Notification::assertNotSentTo($this->user, FeedbackUpdatedNotification::class);
     }
 
-    /** @test */
-    public function a_regular_user_cannot_access_admin_feedback_routes()
-    {
-        Sanctum::actingAs($this->user);
-        
-        // منجرب نفوت على رابط خاص بالأدمن
-        $this->getJson('/api/admin/feedback')->assertForbidden();
-    }
 }
