@@ -19,10 +19,8 @@ class PharmacyPolicy
 
     public function store(User $user): bool
     {
-        $pharmacy = auth()->user()->pharmacy;
-
         // الشرط: لازم يكون دوره صيدلاني و هو صاحب هي الصيدلية
-        return $user->role === Role::PHARMACIST && $user->id === $pharmacy->user_id;
+        return $user->role === Role::ADMIN ||$user->role === Role::SUPER_ADMIN;
     }
 
     public function update(User $user, Pharmacy $pharmacy)

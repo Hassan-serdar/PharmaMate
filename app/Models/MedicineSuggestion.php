@@ -12,9 +12,10 @@ class MedicineSuggestion extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'pharmacist_id', 'name', 'active_ingredient', 'dosage', 'type', 'status', 'rejection_reason'
-    ];
+protected $fillable = [
+    'pharmacist_id', 'name', 'active_ingredient', 'dosage', 'type', 'status', 'rejection_reason', 'manufacturer', 'description'
+];
+
 
     protected $casts = [
         'type' => MedicineTypeEnum::class,

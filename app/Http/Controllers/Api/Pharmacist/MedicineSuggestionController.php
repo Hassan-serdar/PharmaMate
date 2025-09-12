@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Pharmacist;
 
 use App\Traits\ApiResponser;
+use App\Models\MedicineSuggestion;
 use App\Http\Controllers\Controller;
 use App\Services\PharmacyInventoryService;
 use App\Http\Resources\MedicineSuggestionResource;
@@ -27,7 +28,7 @@ class MedicineSuggestionController extends Controller
 
     public function store(StoreMedicineSuggestionRequest $request)
     {
-        $this->authorize('create', \App\Models\MedicineSuggestion::class);
+        $this->authorize('create', MedicineSuggestion::class);
 
         $suggestion = $this->inventoryService->createSuggestion(auth()->user(), $request->validated());
 

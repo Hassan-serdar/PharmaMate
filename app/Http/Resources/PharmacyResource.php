@@ -17,7 +17,7 @@ class PharmacyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'owner' => $this->user->name ?? null,
+            'owner_name' => $this->user->firstname . ' ' . $this->user->lastname,
             'phone_number' => $this->phone_number,
             'address_line_1' => $this->address_line_1,
             'city' => $this->city,

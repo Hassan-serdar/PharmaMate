@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->prefix('pharmacist')->group(function () {
     Route::get('/suggestions', [MedicineSuggestionController::class, 'index']);
     Route::post('/suggestions', [MedicineSuggestionController::class, 'store']);
 
+    Route::get('/', [PharmacistPharmacyController::class, 'index']); // تعديل
     Route::put('/{pharmacy}', [PharmacistPharmacyController::class, 'update']); // تعديل
 
 });
