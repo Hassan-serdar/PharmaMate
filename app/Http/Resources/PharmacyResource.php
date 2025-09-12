@@ -16,24 +16,25 @@ class PharmacyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'pharmacy_name' => $this->name,
-            'contact_number' => $this->phone_number,
-            'address' => [
-                'full_address' => $this->address_line_1,
-                'city' => $this->city,
-            ],
-            'working_hours' => [
-                'opens_at' => $this->opening_time,
-                'closes_at' => $this->closing_time,
-            ],
-            'current_status' => $this->status->value,
-            'location' => [
-                'latitude' => $this->latitude,
-                'longitude' => $this->longitude,
-            ],
-            'owner' => [
-                'name' => $this->user->firstname . ' ' . $this->user->lastname,
-            ],
-        ];
+            'name' => $this->name,
+            'owner' => $this->user->name ?? null,
+            'phone_number' => $this->phone_number,
+            'address_line_1' => $this->address_line_1,
+            'city' => $this->city,
+            'opening_time' => $this->opening_time,
+            'closing_time' => $this->closing_time,
+            'status' => $this->status,
+            'medicines' => $this->whenLoaded('medicines', function () {
+                return $this->medicines->map(function ($medicine) {
+                    return [
+                        'id' => $medicine->id,
+                        'name' => $medicine->name,
+                        'type' => $medicine->type->value,
+                        'quantity' => $medicine->pivot->quantity,
+                        'price' => $medicine->pivot->price,
+                    ];
+                });
+            }),
+        ];    
     }
 }

@@ -6,6 +6,7 @@ use App\Enums\PharmacyStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Pharmacy extends Model
 {
@@ -52,6 +53,13 @@ class Pharmacy extends Model
     public function scopeOnline($query)
     {
         return $query->where('status', PharmacyStatusEnum::ONLINE);
+    }
+    
+    public function medicines(): BelongsToMany
+    {
+        return $this->belongsToMany(Medicine::class, 'medicine_pharmacy')
+                    ->withPivot('quantity', 'price')
+                    ->withTimestamps();
     }
 
 }

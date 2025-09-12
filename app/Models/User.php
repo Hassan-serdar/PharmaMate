@@ -37,8 +37,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'role' => Role::class,
-
     ];
 
     /**
@@ -75,4 +73,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Feedback::class, 'assigned_to_user_id');
     }
+    public function medicineSuggestions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(MedicineSuggestion::class, 'pharmacist_id');
+    }
+
 }

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Pharmacy;
 use App\Enums\Role;
+use App\Models\Medicine;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -51,6 +52,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->count(10)->create([
             'role' => Role::USER,
         ]);
+
+        Medicine::factory()->count(9)->create();
 
 //        User::factory()->count(10)->create([
  //           'role' => Role::DELIVERY,
