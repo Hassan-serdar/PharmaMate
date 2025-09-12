@@ -24,17 +24,7 @@ class PharmacyResource extends JsonResource
             'opening_time' => $this->opening_time,
             'closing_time' => $this->closing_time,
             'status' => $this->status,
-            'medicines' => $this->whenLoaded('medicines', function () {
-                return $this->medicines->map(function ($medicine) {
-                    return [
-                        'id' => $medicine->id,
-                        'name' => $medicine->name,
-                        'type' => $medicine->type->value,
-                        'quantity' => $medicine->pivot->quantity,
-                        'price' => $medicine->pivot->price,
-                    ];
-                });
-            }),
+            'medicines' => MedicineResource::collection($this->whenLoaded('medicines')),
         ];    
     }
 }

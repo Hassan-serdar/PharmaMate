@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\Medicine;
 use App\Models\Pharmacy;
-use App\Models\User;
+use App\Models\MedicineSuggestion;
 
 class PharmacyInventoryService
 {
@@ -52,9 +53,9 @@ class PharmacyInventoryService
     /**
      * إنشاء اقتراح دواء جديد من قبل الصيدلاني
      */
-    public function createSuggestion(User $pharmacist, array $data): void
+    public function createSuggestion(User $pharmacist, array $data): MedicineSuggestion
     {
-        $pharmacist->medicineSuggestions()->create($data);
+        return  $pharmacist->medicineSuggestions()->create($data);
         
         // TODO: Notify admins about the new suggestion
     }

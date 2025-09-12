@@ -15,4 +15,11 @@ class MedicinePolicy
     {
         return $user->role === Role::ADMIN || $user->role === Role::SUPER_ADMIN;
     }
+
+    public function viewAny(User $user): bool
+    {
+        // اسمح للأدمن والصيدلاني برؤية قائمة الأدوية
+        return $user->role === Role::ADMIN || $user->role === Role::SUPER_ADMIN || $user->role === Role::PHARMACIST;
+    }
+
 }

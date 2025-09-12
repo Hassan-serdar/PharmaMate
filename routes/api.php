@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\User\PharmacyController;
 use App\Http\Controllers\Api\Admin\AdminFeedbackController;
 use App\Http\Controllers\Api\Admin\AdminMedicineController;
 use App\Http\Controllers\Api\Admin\AdminPharmacyController;
+use App\Http\Controllers\Api\Pharmacist\MedicineController;
 use App\Http\Controllers\Api\Pharmacist\InventoryController;
 use App\Http\Controllers\Api\Admin\AdminMedicineSuggestionController;
 use App\Http\Controllers\Api\Pharmacist\MedicineSuggestionController;
@@ -72,6 +73,9 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
 });
 
 Route::middleware('auth:sanctum')->prefix('pharmacist')->group(function () {
+
+    Route::get('medicines', [MedicineController::class, 'index'])->name('pharmacist.medicines.index');
+
     // -- Inventory Management --
     Route::get('/inventory', [InventoryController::class, 'index']);
     Route::post('/inventory', [InventoryController::class, 'store']);
