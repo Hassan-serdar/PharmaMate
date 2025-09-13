@@ -35,8 +35,6 @@ class AdminMedicineManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin, 'sanctum')->postJson('/api/admin/medicines', $medicineData);
         
-        // ملاحظة: الخطأ الأصلي هنا لأن MedicineResource يرجع trade_name بدلاً من name
-        // الاختبار التالي يتأكد من أن العملية تمت بنجاح في قاعدة البيانات وهو الأهم
         $response->assertCreated();
         $this->assertDatabaseHas('medicines', ['name' => 'Test Panadol']);
     }
@@ -49,12 +47,10 @@ class AdminMedicineManagementTest extends TestCase
 
         $response = $this->actingAs($this->admin, 'sanctum')->putJson("/api/admin/medicines/{$medicine->id}", $updateData);
 
-        // كما في الاختبار السابق، نتأكد من نجاح العملية في قاعدة البيانات
         $response->assertOk();
         $this->assertDatabaseHas('medicines', ['id' => $medicine->id, 'name' => 'Updated Panadol']);
     }
     
-    // ... باقي الاختبارات الناجحة تبقى كما هي
      /** @test */
     public function an_admin_can_view_all_medicines()
     {
