@@ -54,6 +54,11 @@ class Pharmacy extends Model
     {
         return $query->where('status', PharmacyStatusEnum::ONLINE);
     }
+
+        public function scopeOffline($query)
+    {
+        return $query->where('status', PharmacyStatusEnum::OFFLINE);
+    }
     
     public function medicines(): BelongsToMany
     {

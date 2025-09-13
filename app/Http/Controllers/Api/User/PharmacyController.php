@@ -18,6 +18,9 @@ class PharmacyController extends Controller
         $pharmaciesQuery->when($request->query('status') === 'online', function ($query) {
             return $query->online();
         }); // عم اعمل فلترة فقط ع الصيدليات الأونلاين 
+        $pharmaciesQuery->when($request->query('status') === 'offline', function ($query) {
+            return $query->offline();
+        }); // عم اعمل فلترة فقط ع الصيدليات الأونلاين 
 
         $pharmacies = $pharmaciesQuery->paginate(8);
 

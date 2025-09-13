@@ -15,7 +15,12 @@ class StorePharmacyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
+            'user_id' => [
+                'required',
+                'integer',
+                'exists:users,id',
+                'unique:pharmacies,user_id'
+            ],
             'name' => ['required', 'string', 'max:255'],
             'phone_number' => ['required', 'string', 'unique:pharmacies,phone_number'],
             'address_line_1' => ['required', 'string'],
