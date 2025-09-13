@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Enums\MedicineTypeEnum;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Medicine extends Model
@@ -27,4 +28,22 @@ class Medicine extends Model
                     ->withPivot('quantity', 'price')
                     ->withTimestamps();
     }
+
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        // استخدام الحدث 'deleting'
+        static::deleting(function ($medicine) {
+            // التحقق إذا كان للدواء صورة وحذفها
+            if ($medicine->image_path) {
+                Storage::disk('public')->delete($medicine->image_path);
+            }
+        });
+    }
+
 }

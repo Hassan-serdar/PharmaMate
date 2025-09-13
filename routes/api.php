@@ -64,7 +64,22 @@ Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function ()
     Route::put('/pharmacies/{pharmacy}', [AdminPharmacyController::class, 'update']); // تعديل
     Route::delete('/pharmacies/{pharmacy}', [AdminPharmacyController::class, 'destroy']); // حذف
 
-    Route::apiResource('medicines', AdminMedicineController::class);
+    // جلب كل الأدوية
+    Route::get('medicines', [AdminMedicineController::class, 'index']);
+
+    // 2. إنشاء دواء جديد
+    Route::post('medicines', [AdminMedicineController::class, 'store']);
+
+    // 3. عرض دواء معين
+    Route::get('medicines/{medicine}', [AdminMedicineController::class, 'show']);
+
+    // 4. تحديث دواء معين 
+    // لازم مرر method 
+    // حتى يعرف انو تحديث
+    Route::put('medicines/{medicine}', [AdminMedicineController::class, 'update']);
+
+    // 5. حذف دواء معين
+    Route::delete('medicines/{medicine}', [AdminMedicineController::class, 'destroy']);
     
     // -- Medicine Suggestion Management --
     Route::get('/suggestions', [AdminMedicineSuggestionController::class, 'index']);

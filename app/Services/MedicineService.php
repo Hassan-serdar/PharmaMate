@@ -8,6 +8,7 @@ use App\Models\MedicineSuggestion;
 use App\Models\User;
 use App\Notifications\Pharmacist\SuggestionStatusUpdatedNotification;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class MedicineService
 {
@@ -16,7 +17,10 @@ class MedicineService
      */
     public function createMedicine(array $data): Medicine
     {
-        // TODO: Handle image upload if provided
+        if (isset($data['image'])) {
+            $data['image_path'] = $data['image']->store('medicine-images', 'public');
+            unset($data['image']);
+        }
         return Medicine::create($data);
     }
 
@@ -25,7 +29,15 @@ class MedicineService
      */
     public function updateMedicine(Medicine $medicine, array $data): Medicine
     {
-        // TODO: Handle image upload if provided
+        if (isset($data['image'])) {
+            // إذا كان هناك صورة قديمة، نقوم بحذفها أولاً
+            if ($medicine->image_path) {
+                Storage::disk('public')->delete($medicine->image_path);
+            }
+            // تخزين الصورة الجديدة
+            $data['image_path'] = $data['image']->store('medicine-images', 'public');
+            unset($data['image']);
+        }
         $medicine->update($data);
         return $medicine;
     }

@@ -8,11 +8,13 @@ use App\Http\Requests\Admin\UpdateMedicineRequest;
 use App\Http\Resources\MedicineResource;
 use App\Models\Medicine;
 use App\Services\MedicineService;
+use App\Traits\ApiResponser;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Storage;
 
 class AdminMedicineController extends Controller
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests,ApiResponser;
 
     public function __construct(protected MedicineService $medicineService) {}
 
@@ -46,6 +48,6 @@ class AdminMedicineController extends Controller
     {
         $this->authorize('manage', Medicine::class);
         $medicine->delete();
-        return response()->noContent();
+        return $this->success();
     }
 }
